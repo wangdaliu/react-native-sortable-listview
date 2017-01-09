@@ -228,7 +228,7 @@ var SortableListView = React.createClass({
   checkTargetElement() {
     let scrollValue = this.scrollValue;
 
-    let moveY = this.moveY;
+    let moveY = this.moveY + (this.state.active.layout.frameHeight / 2);
     let targetPixel = scrollValue + moveY - this.firstRowY;
 
     let i = 0;
@@ -316,14 +316,20 @@ var SortableListView = React.createClass({
     this.setOrder(props);
   },
   setOrder: function(props) {
-    this.order = props.order || Object.keys(props.data) || [];
+    if (props.data != null) {
+      this.order = props.order || Object.keys(props.data) || [];
+    }
   },
   getScrollResponder: function() {
     return this.scrollResponder;
   },
   render: function() {
-    let dataSource = this.state.ds.cloneWithRows(this.props.data, this.props.order);
-
+    let dataSource
+    if (this.props.data) {
+      dataSource = this.state.ds.cloneWithRows(this.props.data, this.props.order);
+    } else {
+      dataSource = this.state.ds.cloneWithRows([])
+    }
     return <View ref="wrapper" style={{flex: 1}} onLayout={()=>{}}>
       <ListView
         enableEmptySections={true}
